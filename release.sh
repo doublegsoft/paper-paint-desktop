@@ -1,0 +1,1 @@
+./node_modules/.bin/electron-packager . 'Paper Paint' --icon=res/paper-paint.icns --platform=darwin --arch=x64 --overwrite --prune production --electronZipDir=./res

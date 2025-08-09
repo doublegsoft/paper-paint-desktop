@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="shortcut icon" href="img/favicon.png">
+<title>Paper Paint</title>
+<link href="3rd/font-awesome/css/all.css" rel="stylesheet">
+
+<!-- Main styles for this application -->
+<link href="css/kui-all.min.css" rel="stylesheet">
+</head>
+
+<body id="body" data-t class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show" style="overflow-y: hidden">  
+  <div class="app-body">  
+    <main class="main header-fixed" style="overflow: hidden; margin-left: 0!important;">
+      <div id="container" class="overflow-y: auto; height: 800px;">
+        <div class="row">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button id="buttonSave" class="btn btn-primary" type="button"><i class="fa fa-save"></i></button>
+            <!-- <button id="buttonExport" class="btn btn-primary" type="button"><i class="fa fa-file-export"></i></button> -->
+            <button id="buttonImport" class="btn btn-primary" type="button"><i class="fa fa-file-import"></i></button>
+            <input type="file" id="fileImport" accept=".json" style="display:none;">
+            <button id="buttonRemove" class="btn btn-primary" type="button"><i class="fa fa-trash-alt"></i></button>
+          </div>
+        </div>
+        <div id="designer_container" class="row">
+          <div class="col-md-2" style="padding: 0">
+            <ul class="list-group">
+              <li id="text-part" data-type='text' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">文本</li>
+              <li id="longtext-part" data-type='longtext' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">长文本</li>
+              <!-- <li id="image-part" data-type='image' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">图片</li>
+              <li id="chart-part" data-type='chart' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">图表</li>
+              <li id="table-part" data-type='table' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">表格</li> -->
+              <li id="rect-part" data-type='rect' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">方框</li>
+            </ul>
+          </div>
+          <div class="col-md-8" id="canvas_container" style="background-color: #f4f4f4; padding: 0;">
+          </div>
+          <div id="properties_container" class="col-md-2 properties-container">
+          </div>
+          <div id="image_container" style="display: none">
+            
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="aside-menu"></aside>
+  </div>
+
+<script src="3rd/jquery/jquery-3.2.1.min.js"></script> 
+<script src="3rd/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="3rd/moment/moment.min.js"></script>
+
+<script src="js/kui-dom.js"></script>
+<script src="js/editor/PropertiesEditor.js"></script>
+<script src="js/editor/DesignCanvas.js"></script>
+<script src="js/editor/ReportDesigner.js"></script>
+<script src="js/editor/ReportElementRenderers.js"></script>
+<script src="js/editor/ReportElements.js"></script>
+</body>
+</html>
+
+<script>
+var designerContainer = document.getElementById('designer_container');
+var canvasContainer = document.getElementById('canvas_container');
+
+// dom.autoheight(canvasContainer);
+// dom.autoheight('#properties_container');
+
+var propertiesEditor = new PropertiesEditor({
+  containerId: '#properties_container',
+  confirm: function () {
+    designer.render();
+  }
+});
+
+window.designer = new ReportDesigner({
+  containerId: '#canvas_container',
+  propertiesEditor: propertiesEditor
+});
+
+function drag(ev) {
+  designer.drag(ev);
+}
+
+document.getElementById('buttonImport').addEventListener('click', function(event) {
+  document.getElementById('fileImport').click();
+});
+
+document.getElementById('fileImport').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (file.type !== "application/json" && !file.name.endsWith(".json")) {
+    alert("请选择正确的文件！");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let els = JSON.parse(e.target.result);
+      designer.setElementModels(els);
+    } catch (err) {
+      alert("请选择正确的文件！");
+    }
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById('buttonSave').addEventListener('click', async () => {
+  const json = JSON.stringify(designer.getElementModels(), null, 2); // null, 2 = 格式化输出
+  const blob = new Blob([json], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "design.json";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+});
+
+document.getElementById('buttonRemove').addEventListener('click', async () => {
+  designer.removeSelected();
+});
+</script>
