@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "package": "./node_modules/.bin/electron-packager . 'Paper Paint' --ignore=^/res --ignore=release.sh --icon=res/paper-paint.icns --platform=darwin --arch=x64 --overwrite --prune production --electronZipDir=./res"
+    "package": "./node_modules/.bin/electron-packager . 'Paper Paint' --ignore=^/res --ignore=release.sh --icon=rel/paper-paint.icns --platform=darwin --arch=x64 --overwrite --prune production --electronZipDir=./res"
   },
   "keywords": [],
   "author": "",
