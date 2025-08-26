@@ -1,0 +1,5 @@
+.DS_Store
+node_modules
+Paper Paint-darwin-arm64
+electron-v37.2.6-darwin-arm64.zip
+electron-v37.2.6-darwin-x64.zip

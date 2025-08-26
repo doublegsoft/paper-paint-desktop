@@ -43,7 +43,8 @@ function ReportDesigner(options) {
 
   // this.canvas.setAttribute('width', this.containerWidth);
   // this.canvas.setAttribute('height', options.canvasHeight);
-
+  let containerRect = document.body.getBoundingClientRect();
+  console.log(containerRect);
   this.canvas.style = 'width: 595px; height: 842px;';
 
   //
@@ -72,7 +73,7 @@ function ReportDesigner(options) {
   let dpr = window.devicePixelRatio || 1;
   let rect = this.canvas.getBoundingClientRect();
   this.canvas.width = 595 * dpr;// rect.width * dpr;
-  this.canvas.height = 842 *dpr;// rect.height * dpr;
+  this.canvas.height = 842 * dpr;// rect.height * dpr;
   this.canvas.getContext('2d').scale(dpr, dpr);
 
   // 数据结构定义
