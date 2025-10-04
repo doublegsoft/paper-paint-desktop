@@ -293,8 +293,9 @@ function ImageElement(opts) {
   this.model = {};
   this.modelChangedListeners = [];
   this.model.type = 'image';
-  this.model.width = 350;
-  this.model.height = 300;
+  this.model.width = 310;
+  this.model.height = 240;
+  this.model.image = 'img/placeholder/image.png';
   this.model.id = this.model.type + '-' + moment().valueOf();
   for (let key in opts) {
     this.model[key] = opts[key];

@@ -44,9 +44,17 @@ function ReportDesigner(options) {
   // this.canvas.setAttribute('width', this.containerWidth);
   // this.canvas.setAttribute('height', options.canvasHeight);
   let containerRect = document.body.getBoundingClientRect();
-  console.log(containerRect);
   this.canvas.style = 'width: 595px; height: 842px;';
+  // 初始化设置
+  this.container.innerHTML = '';
+  this.container.appendChild(this.canvas);
 
+  let dpr = window.devicePixelRatio || 1;
+  let rect = this.canvas.getBoundingClientRect();
+  this.canvas.width = 595 * dpr;// rect.width * dpr;
+  this.canvas.height = 842 * dpr;// rect.height * dpr;
+  this.canvas.getContext('2d').scale(dpr, dpr);
+  this.dragging = null;
   //
   // 鼠标点击，只支持删除对象
   //
@@ -65,22 +73,6 @@ function ReportDesigner(options) {
       // self.drawArrow(20, 20, 200, 100, [0, 1, -10, 1, -10, 5]);
     }
   });
-
-  // 初始化设置
-  this.container.innerHTML = '';
-  this.container.appendChild(this.canvas);
-
-  let dpr = window.devicePixelRatio || 1;
-  let rect = this.canvas.getBoundingClientRect();
-  this.canvas.width = 595 * dpr;// rect.width * dpr;
-  this.canvas.height = 842 * dpr;// rect.height * dpr;
-  this.canvas.getContext('2d').scale(dpr, dpr);
-
-  // 数据结构定义
-  this.dragging = null;
-
-  // 画布的其他设置
-
   this.render();
 }
 
@@ -107,7 +99,7 @@ ReportDesigner.prototype.onPropertyChanged = function (prop) {
 /**
  * 添加设计器上的对象到设计器对象对对象的管理容器。
  *
- * @param {object} obj
+ * @param element
  *        设计器新增加的对象
  */
 ReportDesigner.prototype.addAndRenderElement = function (element) {
@@ -222,18 +214,18 @@ ReportDesigner.prototype.drawGrid = function (w, h, strokeStyle, step) {
   ctx.stroke();
 
   const dpr = window.devicePixelRatio || 1;
-  if (this.background) {
-    ctx.drawImage(this.background, 0, 0, this.background.naturalWidth, this.background.naturalHeight,
-      0, 0, canvas.width / dpr, canvas.height / dpr);
-  } else {
-    this.background = new Image();
-    let bg = this.background;
-    this.background.src = 'img/pdf/background.png';
-    this.background.onload = function () {
-      ctx.drawImage(bg, 0, 0, bg.naturalWidth, bg.naturalHeight,
-        0, 0, canvas.width / dpr, canvas.height / dpr);
-    };
-  }
+  // if (this.background) {
+  //   ctx.drawImage(this.background, 0, 0, this.background.naturalWidth, this.background.naturalHeight,
+  //     0, 0, canvas.width / dpr, canvas.height / dpr);
+  // } else {
+  //   this.background = new Image();
+  //   let bg = this.background;
+  //   this.background.src = 'img/pdf/background.png';
+  //   this.background.onload = function () {
+  //     ctx.drawImage(bg, 0, 0, bg.naturalWidth, bg.naturalHeight,
+  //       0, 0, canvas.width / dpr, canvas.height / dpr);
+  //   };
+  // }
 };
 
 
@@ -242,6 +234,8 @@ ReportDesigner.prototype.render = function (renderGrid) {
 
   // 清除画布
   ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
   // 网格线
   if (renderGrid !== false)
@@ -295,17 +289,18 @@ ReportDesigner.prototype.drop = function (self, ev) {
   let y = ev.clientY - rect.top;
 
   let dragType = ev.dataTransfer.getData('drag-type');
-  if (dragType == 'text') {
+  dragType = dragType || '';
+  if (dragType === 'text') {
     self.addText('这里是标题', x, y);
-  } else if (dragType == 'longtext') {
+  } else if (dragType === 'longtext') {
     self.addLongtext('这是长文本的示例，长文本允许折行显示，适合显示描述性的文本内容。', x, y);
-  } else if (dragType == 'table') {
+  } else if (dragType === 'table') {
     self.addTable(x, y);
-  } else if (dragType == 'image') {
+  } else if (dragType === 'image') {
     self.addImage(x, y);
-  } else if (dragType == 'chart') {
+  } else if (dragType === 'chart') {
     self.addChart(x, y);
-  } else if (dragType == 'rect') {
+  } else if (dragType === 'rect') {
     self.addRect(x, y);
   }
 };

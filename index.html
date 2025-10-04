@@ -30,7 +30,8 @@
             <ul class="list-group">
               <li id="text-part" data-type='text' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">文本</li>
               <li id="longtext-part" data-type='longtext' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">长文本</li>
-              <!-- <li id="image-part" data-type='image' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">图片</li>
+              <li id="image-part" data-type='image' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">图片</li>
+              <!--
               <li id="chart-part" data-type='chart' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">图表</li>
               <li id="table-part" data-type='table' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">表格</li> -->
               <li id="rect-part" data-type='rect' draggable="true" ondragstart="drag(event);" class="list-group-item" style="cursor: grab">方框</li>
@@ -63,13 +64,7 @@
 </html>
 
 <script>
-var designerContainer = document.getElementById('designer_container');
-var canvasContainer = document.getElementById('canvas_container');
-
-// dom.autoheight(canvasContainer);
-// dom.autoheight('#properties_container');
-
-var propertiesEditor = new PropertiesEditor({
+const propertiesEditor = new PropertiesEditor({
   containerId: '#properties_container',
   confirm: function () {
     designer.render();
